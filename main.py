@@ -8,20 +8,20 @@ import os
 map_gen_name = "insert name later lol"
 
 seed = 2023
-size = (16, 16)
+size = (256, 256)
 minimum = 0
-maximum = 16
-flatness = 16
+maximum = 10
+flatness = 32
 
 
 def lerp(a, b, t):
-    return round(a * (1 - t) + b * t)
+    return a * (1 - t) + b * t
 
 
 def random_int(min: int, max: int, x: int, y: int, seed: int):
     random.seed(hash((seed, x, y)))
     num = random.random()
-    return round((max - min) * num) + min
+    return round((max - min) * num + min)
 
 
 def noise_gen(seed, min, max, size, flatness):
@@ -65,9 +65,12 @@ def visualize_heightmap(heightmap):
     plt.show()
 
 
-heightmap = noise_gen(seed, minimum, maximum, size, flatness)[0:size[0]][0:size[1]]
+heightmap = noise_gen(seed, minimum, maximum, size, flatness)
+heightmap = [[round(element) for element in row[0:size[1]]] for row in heightmap[0:size[0]]]
 
-# visualize_heightmap(heightmap)
+# print(heightmap)
+
+visualize_heightmap(heightmap)
 
 fluid_heightmap = " ".join(["0"] * (size[0] * size[1]))
 fluid_direction_map = " ".join(["0:0:0:0"] * (size[0] * size[1]))
