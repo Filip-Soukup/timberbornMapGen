@@ -17,13 +17,13 @@ matplotlib.use('TkAgg')
 
 map_gen_name = "insert name later lol"
 
-seed = 69
-size = (69, 69)
-minimum = 4
-maximum = 16
-flatness = 32
+seed = 42
+size = (128, 128)
+minimum = 2
+maximum = 14
+flatness = 64
 
-noise_generator = OpenSimplex(seed=42)
+noise_generator = OpenSimplex(seed)
 heightmap = [
     [
         round(((noise_generator.noise2(x/flatness, y/flatness) + 1)/2) * (maximum - minimum) + minimum)
