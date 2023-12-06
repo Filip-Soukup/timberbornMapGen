@@ -1,61 +1,9 @@
-import random
-import math
+import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
 import zipfile
 import os
-
-map_gen_name = "insert name later lol"
-
-seed = 2023
-size = (256, 256)
-minimum = 0
-maximum = 10
-flatness = 32
-
-
-def lerp(a, b, t):
-    return a * (1 - t) + b * t
-
-
-def random_int(min: int, max: int, x: int, y: int, seed: int):
-    random.seed(hash((seed, x, y)))
-    num = random.random()
-    return round((max - min) * num + min)
-
-
-def noise_gen(seed, min, max, size, flatness):
-    count_x = math.ceil(size[0] / flatness)
-    count_y = math.ceil(size[1] / flatness)
-
-    # list defining
-    noise = [
-        [0 for j in range(math.ceil(size[0] / flatness) * flatness + 1)]
-        for i in range(math.ceil(size[1] / flatness) * flatness + 1)
-    ]
-
-    # main values
-    for x in range(count_x + 1):
-        for y in range(count_y + 1):
-            noise[x * flatness][y * flatness] = random_int(min, max, x, y, seed)
-
-    # grid values
-    for x in range(count_x + 1):
-        for y in range(math.ceil(size[1] / flatness) * flatness + 1):
-            if y % flatness != 0:
-                noise[x * flatness][y] = lerp(noise[x * flatness][(y // flatness) * flatness],
-                                              noise[x * flatness][(y // flatness + 1) * flatness],
-                                              (y % flatness) / flatness)
-
-    for x in range(math.ceil(size[0] / flatness) * flatness + 1):
-        for y in range(math.ceil(size[1] / flatness) * flatness + 1):
-            if x % flatness != 0:
-                noise[x][y] = lerp(noise[(x // flatness) * flatness][y], noise[(x // flatness + 1) * flatness][y],
-                                   (x % flatness) / flatness)
-
-    # map = slice(noise)
-
-    return noise
+from opensimplex import OpenSimplex
 
 
 def visualize_heightmap(heightmap):
@@ -65,8 +13,24 @@ def visualize_heightmap(heightmap):
     plt.show()
 
 
-heightmap = noise_gen(seed, minimum, maximum, size, flatness)
-heightmap = [[round(element) for element in row[0:size[1]]] for row in heightmap[0:size[0]]]
+matplotlib.use('TkAgg')
+
+map_gen_name = "insert name later lol"
+
+seed = 69
+size = (69, 69)
+minimum = 4
+maximum = 16
+flatness = 32
+
+noise_generator = OpenSimplex(seed=42)
+heightmap = [
+    [
+        round(((noise_generator.noise2(x/flatness, y/flatness) + 1)/2) * (maximum - minimum) + minimum)
+        for y in range(size[1]-1)
+    ]
+    for x in range(size[0]-1)
+]
 
 # print(heightmap)
 
