@@ -4,6 +4,34 @@ import numpy as np
 import zipfile
 import os
 from opensimplex import OpenSimplex
+import copy
+
+
+def find_closest_flat_space(heightmap):
+    def is_flat_space(i, j):
+        center_value = heightmap[i][j]
+        for x in range(i - 1, i + 2):
+            for y in range(j - 1, j + 2):
+                if heightmap[x][y] != center_value:
+                    return False
+        return True
+
+    rows, cols = len(heightmap), len(heightmap[0])
+    min_distance = float('inf')
+    result_coords = None
+
+    for i in range(1, rows - 1):
+        for j in range(1, cols - 1):
+            if is_flat_space(i, j):
+                # Calculate distance to the center
+                distance = abs(i - (rows // 2)) + abs(j - (cols // 2))
+
+                # Update result if closer
+                if distance < min_distance:
+                    min_distance = distance
+                    result_coords = (i, j)
+
+    return result_coords
 
 
 def visualize_heightmap(heightmap):
@@ -15,7 +43,7 @@ def visualize_heightmap(heightmap):
 
 matplotlib.use('TkAgg')
 
-map_gen_name = "insert name later lol"
+map_gen_name = "PYmberGen"
 
 seed = 42
 size = (128, 128)
@@ -34,6 +62,9 @@ heightmap = [
 
 # print(heightmap)
 
+start_loc = find_closest_flat_space(heightmap)
+print(start_loc)
+
 visualize_heightmap(heightmap)
 
 fluid_heightmap = " ".join(["0"] * (size[0] * size[1]))
@@ -41,7 +72,6 @@ fluid_direction_map = " ".join(["0:0:0:0"] * (size[0] * size[1]))
 
 world_json = (f'''{{
   "GameVersion":"0.5.3.2-3a67edf-xsw",
-  "MadeWith": "{map_gen_name}",
   "Timestamp":"INSERT CREATION TIME",
   "Singletons":{{
     "MapSize":{{
