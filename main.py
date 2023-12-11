@@ -45,22 +45,20 @@ matplotlib.use('TkAgg')
 
 map_gen_name = "PYmberGen"
 
-seed = 42
-size = (128, 128)
+seed = 2679578
+size = (256, 256)
 minimum = 2
-maximum = 14
-flatness = 64
+maximum = 16
+flatness = 32
 
 noise_generator = OpenSimplex(seed)
 heightmap = [
     [
         round(((noise_generator.noise2(x/flatness, y/flatness) + 1)/2) * (maximum - minimum) + minimum)
-        for y in range(size[1]-1)
+        for y in range(size[1])
     ]
-    for x in range(size[0]-1)
+    for x in range(size[0])
 ]
-
-# print(heightmap)
 
 start_loc = find_closest_flat_space(heightmap)
 print(start_loc)
