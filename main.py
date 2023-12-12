@@ -4,7 +4,8 @@ import numpy as np
 import zipfile
 import os
 from opensimplex import OpenSimplex
-import copy
+from perlin_noise import PerlinNoise
+# import copy
 
 
 def find_closest_flat_space(heightmap):
@@ -41,6 +42,17 @@ def visualize_heightmap(heightmap):
     plt.show()
 
 
+def make_heighmap(width, heigh, seed):
+    def get_height(x, y):
+        round(((noise_generator.noise2(x / flatness, y / flatness) + 1) / 2) * (maximum - minimum) + minimum)
+
+    diff_noise = PerlinNoise(octaves=variation, seed=seed - 10)
+    min_noise = PerlinNoise(octaves=variation, seed=seed + 10)
+    noise_generator = OpenSimplex(seed)
+
+
+
+
 matplotlib.use('TkAgg')
 
 map_gen_name = "PYmberGen"
@@ -50,7 +62,10 @@ size = (256, 256)
 minimum = 2
 maximum = 16
 flatness = 32
+variation = 4
 
+diff_noise = PerlinNoise(octaves=variation, seed=seed-10)
+min_noise = PerlinNoise(octaves=variation, seed=seed+10)
 noise_generator = OpenSimplex(seed)
 heightmap = [
     [
